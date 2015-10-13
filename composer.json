@@ -20,7 +20,7 @@
     
     "require": {
         "php": ">=5.3.0",
-        "elidickinson/php-export-data": "dev"
+        "diego3/php-export-data": "dev-master"
     },
     
     "require-dev": {
