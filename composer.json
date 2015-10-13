@@ -1,5 +1,5 @@
 {
-    "name": "elidickinson/php-export-data",
+    "name": "diego3/php-export-data",
     "type": "library",
     "description": "A simple library for exporting tabular data to Excel-friendly XML, CSV, or TSV",
     "keywords": ["library", "excel", "csv"],
@@ -18,16 +18,9 @@
         }
     ],
     
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/diego3/php-export-data"
-        }
-    ],
-    
     "require": {
         "php": ">=5.3.0",
-        "elidickinson/php-export-data": "dev-psr4"
+        "elidickinson/php-export-data": "dev"
     },
     
     "require-dev": {
