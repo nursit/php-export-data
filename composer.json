@@ -28,9 +28,7 @@
     
     "autoload": {
         "psr-4": {
-            "Export\\": "src/"
-        },
-        "psr-4": {
+            "Export\\": "src/",
             "ExportTest\\": "test/src/"
         }
     }
