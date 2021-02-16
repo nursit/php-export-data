@@ -72,6 +72,67 @@ class ExportDataExcel extends ExportData {
         return $output;
     }
 
+    protected function formatDate($year, $month, $day, $hours, $minutes, $seconds) {
+        return str_pad(intval($year), 4, 0, STR_PAD_LEFT)
+          . '-' . str_pad(intval($month), 2, 0, STR_PAD_LEFT)
+          . '-' . str_pad(intval($day), 2, 0, STR_PAD_LEFT)
+          . 'T' . str_pad(intval($hours), 2, 0, STR_PAD_LEFT)
+          . ':' . str_pad(intval($minutes), 2, 0, STR_PAD_LEFT)
+          . ':' . str_pad(intval($seconds), 2, 0, STR_PAD_LEFT);
+    }
+
+    protected function detectTime($item) {
+        static $zero = array(0, 0, 0);
+        if (!strlen(trim($item))){
+            return $zero;
+        }
+
+        if (preg_match('#(^T|/s+)?([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})\s*$#', $item, $match)) {
+            array_shift($match);
+            array_shift($match);
+            return $match;
+        }
+
+        return false;
+    }
+
+    /**
+     * Sniff for valid dates; should look something like 2010-07-14 or 14/07/2010 etc. Can
+     * also have an optional time after the date.
+     *
+     * Note we want to be very strict in what we consider a date. There is the possibility
+     * of really screwing up the data if we try to reformat a string that was not actually
+     * intended to represent a date.
+     *
+     * @param $item
+     * @return false|string
+     */
+    protected function detectDate($item) {
+        if ($item = trim($item)) {
+            if (preg_match('#^([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}|[0-9]{1,2})#', $item, $match)) {
+                $day = $match[1];
+                $month = $match[2];
+                $year = $match[3];
+                if (strlen($year) <= 2) {
+                    $year = 2000 + $year;
+                }
+                if ($time = $this->detectTime(substr($item, strlen($match[0])))) {
+                  list($hours, $minutes, $seconds) = $time;
+                  return $this->formatDate($year, $month, $day, $hours, $minutes, $seconds);
+                }
+            } elseif (preg_match('#^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})#', $item, $match)) {
+                $year = $match[1];
+                $month = $match[2];
+                $day = $match[3];
+                if ($time = $this->detectTime(substr($item, strlen($match[0])))) {
+                    list($hours, $minutes, $seconds) = $time;
+                    return $this->formatDate($year, $month, $day, $hours, $minutes, $seconds);
+                }
+            }
+        }
+        return false;
+    }
+
     private function generateCell($item) {
         $output = '';
         $style = '';
@@ -86,18 +147,9 @@ class ExportDataExcel extends ExportData {
 		          $style = 'sNUM';
             }
         }
-        // Sniff for valid dates; should look something like 2010-07-14 or 7/14/2010 etc. Can
-        // also have an optional time after the date.
-        //
-		// Note we want to be very strict in what we consider a date. There is the possibility
-        // of really screwing up the data if we try to reformat a string that was not actually 
-        // intended to represent a date.
-        elseif (preg_match("/^(\d{1,2}|\d{4})[\/\-]\d{1,2}[\/\-](\d{1,2}|\d{4})([^\d].+)?$/", $item) &&
-                ($timestamp = strtotime($item)) &&
-                ($timestamp > 0) &&
-                ($timestamp < strtotime('+500 years'))) {
+        elseif ($date = $this->detectDate($item)){
             $type = 'DateTime';
-            $item = strftime("%Y-%m-%dT%H:%M:%S", $timestamp);
+            $item = $date;
             $style = 'sDT'; // defined in header; tells excel to format date for display
         } else {
             $type = 'String';
