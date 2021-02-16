@@ -100,6 +100,13 @@ class ExportDataExcel extends ExportData {
         // not necessary, better keeping &#039; for quote
         //$item = str_replace('&#039;', '&apos;', $item);
 
+        if (!$style and (strpos($item, "\r") !== false or strpos($item, "\n") !== false)) {
+            $item = str_replace("\r\n", "\n", $item);
+            $item = str_replace("\r", "\n", $item);
+            $item = str_replace("\n", "&#013;", $item);
+            $style = 'sTXT';
+        }
+
         $output .= "            ";
         $output .= $style ? "<Cell ss:StyleID=\"$style\">" : "<Cell>";
         $output .= sprintf("<Data ss:Type=\"%s\">%s</Data>", $type, $item);
