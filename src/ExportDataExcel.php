@@ -32,7 +32,14 @@ class ExportDataExcel extends ExportData {
 
         // Set up styles
         $output .= "<Styles>\n";
-        $output .= "<Style ss:ID=\"sDT\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n";
+
+        // default style
+        $output .= "<Style ss:ID=\"Default\" ss:Name=\"Normal\"><Alignment ss:Vertical=\"Top\"/></Style>\n";
+        // multiline text style
+        $output .= "<Style ss:ID=\"sTXT\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>\n";
+        // date style
+        $output .= "<Style ss:ID=\"sDT\"><Alignment ss:Vertical=\"Top\"/><NumberFormat ss:Format=\"Short Date\"/></Style>\n";
+
         $output .= "</Styles>\n";
 
         // worksheet header
