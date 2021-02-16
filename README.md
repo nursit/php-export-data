@@ -1,6 +1,9 @@
-php-export-data by Eli Dickinson
+# php-export-data 
+-- by Eli Dickinson
 
-http://github.com/elidickinson/php-export-data
+Improved version by Nursit https://github.com/nursit/php-export-data
+* forked from https://github.com/diego3/php-export-data
+* forked from http://github.com/elidickinson/php-export-data
 
 Released under the permissive MIT License: http://www.opensource.org/licenses/mit-license.php
 
