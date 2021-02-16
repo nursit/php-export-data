@@ -89,7 +89,10 @@ class ExportDataExcel extends ExportData {
             $type = 'String';
         }
 
-        $item = str_replace('&#039;', '&apos;', htmlspecialchars($item, ENT_QUOTES));
+        $item = htmlspecialchars($item, ENT_QUOTES, $this->encoding);
+        // not necessary, better keeping &#039; for quote
+        //$item = str_replace('&#039;', '&apos;', $item);
+
         $output .= "            ";
         $output .= $style ? "<Cell ss:StyleID=\"$style\">" : "<Cell>";
         $output .= sprintf("<Data ss:Type=\"%s\">%s</Data>", $type, $item);
