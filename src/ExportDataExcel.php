@@ -39,6 +39,8 @@ class ExportDataExcel extends ExportData {
         $output .= "<Style ss:ID=\"sTXT\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>\n";
         // date style
         $output .= "<Style ss:ID=\"sDT\"><Alignment ss:Vertical=\"Top\"/><NumberFormat ss:Format=\"Short Date\"/></Style>\n";
+        // Number style
+        $output .= "<Style ss:ID=\"sNUM\"><NumberFormat ss:Format=\"Standard\"/></Style>\n";
 
         $output .= "</Styles>\n";
 
@@ -78,6 +80,11 @@ class ExportDataExcel extends ExportData {
         // as text if number is longer than that.
         if (preg_match("/^-?\d+(?:[.,]\d+)?$/", $item) && (strlen($item) < 15)) {
             $type = 'Number';
+
+            // decimal numbers formated as number, but keep integers with default style
+            if (strpos($item, '.') or strpos($item, ',')) {
+		          $style = 'sNUM';
+            }
         }
         // Sniff for valid dates; should look something like 2010-07-14 or 7/14/2010 etc. Can
         // also have an optional time after the date.
